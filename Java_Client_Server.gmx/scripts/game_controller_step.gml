@@ -23,36 +23,29 @@ switch(room) {
             var mouse_click = point_in_rectangle(floor(mouse_x), floor(mouse_y), x1, y1, x2, y2);
             if(mouse_click) {
                 show_debug_message("Clicked within text box");
-                player_can_type = true;
+                chat_input.player_can_type = true;
             } else {
                 show_debug_message("Clicked outside of text box");
-                player_can_type = false;
+                chat_input.player_can_type = false;
             }
+            //reset keyboard string when clicking for now
+            keyboard_string = "";
         }
         
         //Enters name and goes to next room
         if(keyboard_check_pressed(vk_return)) {
-            Client.player_name = typed_text; 
+            Client.player_name = chat_input.chat_text; 
             var b = Client.buff;
-            //Send player name to server
-            //Will test keeping track of unique names for now
             buffer_seek(b, buffer_seek_start, 0); // Move buffer to 0
-            //buffer_write(b, buffer_u8, Client.USER_NAME_SEND_REQUEST); // Header
-            //buffer_write(b, buffer_string, Client.player_name);
-            //network_send_packet(Client.server, b, buffer_tell(b));
             client_send_request(Client.server, b, Client.USER_NAME_SEND_REQUEST)
             
             room_goto(rm_main);
         }
         
-        if(keyboard_check_released(vk_anykey) && player_can_type) {
-            typed_text = keyboard_string;
-        }
+        
         break;
         
     case rm_main:
-        //var xx = 64;
-        //var yy = 48;
         var spr_w = 32;
         var spr_h = 32;
         var xx = (room_width div 2) - (spr_w * 2);
@@ -74,7 +67,6 @@ switch(room) {
             for(var i = 0; i < 3; i++) {
                 for(var j = 0; j < 3; j++) {
                     var new_color = asset_get_index(game_board_array[i, j]);
-                    //show_debug_message(string(new_color));
                     panel_board_array[i, j].image_blend = new_color;
                 }
             }

@@ -30,6 +30,8 @@ if(server != noone) {
     
     
     if(move_latency <= 0) {
+    
+        /*
                 
         if(left) {
             direction_last_moved = "left";
@@ -48,6 +50,7 @@ if(server != noone) {
             client_send_request(server, buff, USER_MOVE_REQUEST);
             move_latency = move_latency_max;
         }
+        */
         
     }
 }

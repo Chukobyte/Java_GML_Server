@@ -1,7 +1,7 @@
 ///game_controller_init()
 
 global.MAGIC_NUMBER = 20336;
-
+delta_tracker = instance_create(x, y, DeltaTracker);
 //Client create array upon creation
 player_client = instance_create(x, y, Client);
 var client_json_text = player_client.client_pretty_json;
@@ -10,5 +10,6 @@ panel_board_array = noone; //stores panel to reference game board array
 update_board = false;  //checks if board was updated
 
 //Chat box
-typed_text = "";
-player_can_type = false;
+chat_input = instance_create(x, y, ChatInput);
+//typed_text = "";
+//player_can_type = false;

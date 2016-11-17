@@ -1,3 +1,4 @@
 ///delta_tracker_init()
-full_fps = 60;
-delta = full_fps / (1000000 * delta_time);
+desired_fps = 60;
+expected_delta_time = 1 / desired_fps * 1000000; //In microseconds
+delta = expected_delta_time / delta_time; //Turn this into a ratio

@@ -44,6 +44,8 @@
       <script>scripts\get_input.gml</script>
       <script>scripts\json_input_test.gml</script>
       <script>scripts\json_decode_two_dimensional_array.gml</script>
+      <script>scripts\array_compress.gml</script>
+      <script>scripts\array_insert.gml</script>
     </scripts>
     <scripts name="GameController">
       <script>scripts\game_controller_init.gml</script>
@@ -53,12 +55,24 @@
     <scripts name="DeltaTracker">
       <script>scripts\delta_tracker_init.gml</script>
     </scripts>
+    <scripts name="ChatLog">
+      <script>scripts\chat_log_init.gml</script>
+      <script>scripts\chat_log_draw.gml</script>
+    </scripts>
+    <scripts name="ChatInput">
+      <script>scripts\chat_input_init.gml</script>
+      <script>scripts\chat_input_step.gml</script>
+      <script>scripts\chat_input_draw.gml</script>
+      <script>scripts\chat_get_input.gml</script>
+    </scripts>
   </scripts>
   <objects name="objects">
     <object>objects\Client</object>
     <object>objects\GameController</object>
     <object>objects\Panel</object>
     <object>objects\DeltaTracker</object>
+    <object>objects\ChatLog</object>
+    <object>objects\ChatInput</object>
   </objects>
   <rooms name="rooms">
     <room>rooms\rm_initialize</room>

@@ -55,10 +55,12 @@ public class ClientHandler implements Runnable{
 				}
 				RequestHandler.handleRequest(this, in, out);
 			} catch(SocketException se) {
-				se.printStackTrace();
+				//se.printStackTrace();
+				System.out.println(player.getName() + " has disconnected (SE)");
 				running = false;
 			} catch(EOFException eof)  {
-				eof.printStackTrace();
+				//eof.printStackTrace();
+				System.out.println(player.getName() + " has disconnected (EOF)");
 				running = false;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
