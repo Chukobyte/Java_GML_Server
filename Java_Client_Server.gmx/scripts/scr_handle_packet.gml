@@ -53,6 +53,28 @@ if(n_id == server) {
                 show_debug_message("Response: " + response);
                 break;
                 
+            case CHAT_LOG_SEND_RESPONSE:
+                //var response = buffer_read(buffer, buffer_string);
+                show_debug_message("Received chat log response");
+                break;
+                
+            case GET_USERS_ONLINE_RESPONSE:
+                var response = buffer_read(buffer, buffer_string);
+                show_debug_message("Users Online: " + response);
+                var online_users_map = json_decode(response);
+                var users_list = ds_map_find_value(online_users_map, "clients");
+                show_debug_message("Users: " + string(ds_list_size(users_list)));
+                for(var i = 0; i < ds_list_size(users_list); i++) {
+                    var list_map = ds_list_find_value(users_list, i);
+                    var user_id = ds_map_find_value(list_map, "user_id");
+                    var player_name = ds_map_find_value(list_map, "player_name");
+                    show_debug_message("user_id = " + string(user_id) + "  |  player_name = " + string(player_name));
+                    ds_map_destroy(list_map);
+                }
+                ds_list_destroy(users_list);
+                ds_map_destroy(online_users_map);
+                break
+                
             default:
                 show_debug_message("Error, message id invalid!");
                 break;

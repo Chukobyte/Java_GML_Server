@@ -58,13 +58,14 @@ public class ClientHandler implements Runnable{
 				//se.printStackTrace();
 				System.out.println(player.getName() + " has disconnected (SE)");
 				running = false;
+				Server.removeClientHandler(getPlayer().getUserId());
 			} catch(EOFException eof)  {
 				//eof.printStackTrace();
 				System.out.println(player.getName() + " has disconnected (EOF)");
 				running = false;
+				Server.removeClientHandler(getPlayer().getUserId());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				//Print.withTime(e.getMessage());
 				e.printStackTrace();
 			}
 		}

@@ -30,6 +30,10 @@ SHUFFLE_GAME_BOARD_RESPONSE = 24;
 SHUFFLE_GAME_BOARD_REQUEST = 12;
 USER_MOVE_RESPONSE = 64;
 USER_MOVE_REQUEST = 32;
+CHAT_LOG_SEND_RESPONSE = 88;
+CHAT_LOG_SEND_REQUEST = 44;
+GET_USERS_ONLINE_RESPONSE = 66;
+GET_USERS_ONLINE_REQUEST = 33;
 
 server = network_create_socket(network_socket_tcp);
 network_set_timeout(server, 20000, 20000); //set read and write to 20 seconds

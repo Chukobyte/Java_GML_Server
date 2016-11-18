@@ -40,6 +40,16 @@ switch(request) {
         buffer_write(buffer, buffer_string, direction_last_moved);
         network_send_packet(socket, buffer, buffer_tell(buffer));
         break;
+        
+    case Client.CHAT_LOG_SEND_REQUEST:
+        buffer_write(buffer, buffer_string, ChatInput.chat_text);
+        network_send_packet(socket, buffer, buffer_tell(buffer));
+        break;
+        
+    case Client.GET_USERS_ONLINE_REQUEST:
+        show_debug_message("Get Users Online Requested!");
+        network_send_packet(socket, buffer, buffer_tell(buffer));
+        break;
 
     default:
         show_debug_message("Unknown ID trying to send");

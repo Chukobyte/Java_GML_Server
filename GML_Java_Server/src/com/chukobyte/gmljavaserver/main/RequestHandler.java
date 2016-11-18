@@ -13,19 +13,31 @@ public class RequestHandler {
 			case MessageConstants.USER_NAME_SEND_REQUEST: handleUserNameSendRequest(client, in, out); break;
 			case MessageConstants.SHUFFLE_GAME_BOARD_REQUEST: handleShuffleGameBoardRequest(client, in, out); break;
 			case MessageConstants.USER_MOVE_REQUEST: handleUserMoveRequest(client, in, out); break;
+			case MessageConstants.CHAT_LOG_SEND_REQUEST: handleChatLogSendRequest(client, in, out); break;
+			case MessageConstants.GET_USERS_ONLINE_REQUEST: handleGetUsersOnlineRequest(client, in, out); break;
 			default: System.out.println("Unknown request"); break;
 		}
 		out.flush();
 	}
 	
-	//public static void handleRequest(GMLInputStream in, GMLOutputStream out) throws IOException {
-	//	handleRequest((short) 0, in, out);
-	//}
-	
 	
 	private static void prepareResponse(GMLOutputStream out, short size) throws IOException {
 		out.writeS32(MessageConstants.MAGIC_NUMBER);
 		out.writeS16(size);
+	}
+	
+	private static void handleGetUsersOnlineRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out) throws IOException {
+		out.writeS16(MessageConstants.MAGIC_NUMBER);
+		out.writeS8(MessageConstants.GET_USERS_ONLINE_RESPONSE);
+		String jsonText = Server.printLoggedInClients();
+		out.writeString(jsonText);
+	}
+	
+	private static void handleChatLogSendRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out) throws IOException {
+		String chatLog = in.readString();
+		System.out.println("chat log: " + chatLog);
+		out.writeS16(MessageConstants.MAGIC_NUMBER);
+		out.writeS8(MessageConstants.CHAT_LOG_SEND_RESPONSE);
 	}
 	
 	private static void handleUserMoveRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out) throws IOException {

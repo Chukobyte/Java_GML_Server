@@ -15,6 +15,12 @@ switch(room) {
         
     case rm_intro:
         //Chat box stuff
+        
+        //For clicking in chat box for now
+        //Set x and  y
+        chat_input.x = (64 + 2);
+        chat_input.y = room_height div 2 - 116;
+        
         if(mouse_check_button_pressed(mb_left)) {
             var x1 = 64;
             var y1 = 140 - 64;
@@ -35,10 +41,12 @@ switch(room) {
         //Enters name and goes to next room
         if(keyboard_check_pressed(vk_return)) {
             Client.player_name = chat_input.chat_text; 
-            var b = Client.buff;
-            buffer_seek(b, buffer_seek_start, 0); // Move buffer to 0
-            client_send_request(Client.server, b, Client.USER_NAME_SEND_REQUEST)
-            
+            client_send_request(Client.server, Client.buff, Client.USER_NAME_SEND_REQUEST);
+            chat_input.player_can_type = false;
+            chat_input.typed_text = reset_typed_array();  //reset array
+            chat_input.chat_text = "";
+            show_debug_message("chat_input after enter: " + chat_input.chat_text);
+            keyboard_string = "";
             room_goto(rm_main);
         }
         
@@ -46,6 +54,38 @@ switch(room) {
         break;
         
     case rm_main:
+    
+        //For clicking in chat box for now
+        //Set x and  y
+        chat_input.x = room_width - room_width div 4;
+        chat_input.y = room_height  - room_height div 4;
+        
+        if(mouse_check_button_pressed(mb_left)) {
+            var x1 = room_width - room_width div 4;
+            var x2 = (room_width - room_width div 4) + 120;
+            var y1 = (room_height - room_height div 4) - 120;
+            var y2 = (room_height - room_height div 4) + 20;
+            var mouse_click = point_in_rectangle(floor(mouse_x), floor(mouse_y), x1, y1, x2, y2);
+            if(mouse_click) {
+                show_debug_message("Clicked within text box");
+                chat_input.player_can_type = true;
+            } else {
+                show_debug_message("Clicked outside of text box");
+                chat_input.player_can_type = false;
+            }
+            //reset keyboard string when clicking for now
+            keyboard_string = "";
+        }
+        
+        //keyboard return
+        if(keyboard_check_pressed(vk_return)) {
+            show_debug_message("chat_input before enter: " + chat_input.chat_text);
+            client_send_request(Client.server, Client.buff, Client.CHAT_LOG_SEND_REQUEST);
+            chat_input.typed_text = reset_typed_array();
+            chat_input.chat_text = "";
+            keyboard_string = "";
+        }
+    
         var spr_w = 32;
         var spr_h = 32;
         var xx = (room_width div 2) - (spr_w * 2);

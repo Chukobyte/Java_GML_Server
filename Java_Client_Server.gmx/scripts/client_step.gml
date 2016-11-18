@@ -2,10 +2,6 @@
 
 get_input();
 
-if(test_button) {
-    //json_input_test();
-}
-
 if(server != noone) {
     connection_count--
     move_latency--;
@@ -22,6 +18,11 @@ if(server != noone) {
             
             if(shuffle_button) {
                 client_send_request(server, buff, SHUFFLE_GAME_BOARD_REQUEST);
+                connection_count = connection_rate;
+            }
+            
+            if(get_users_online_button) {
+                client_send_request(server, buff, GET_USERS_ONLINE_REQUEST);
                 connection_count = connection_rate;
             }
         }
