@@ -17,6 +17,10 @@ client_pretty_json = pretty;
 client_array = json_decode_two_dimensional_array(pretty);
 //end test
 
+
+buffering_messages = false; //keeps track if expecting the rest of incomplete message
+response_buffered_messages = "";
+buffered_message_id = noone;
 //Message ID Constants
 MAGIC_NUMBER = 12313;
 CLIENT_HEADER = 124;
@@ -37,7 +41,8 @@ GET_USERS_ONLINE_REQUEST = 33;
 
 server = network_create_socket(network_socket_tcp);
 network_set_timeout(server, 20000, 20000); //set read and write to 20 seconds
-result = network_connect_raw(server, "127.0.0.1", 6510);
+result = network_connect_raw(server, "192.168.33.42", 6510);
+//result = network_connect_raw(server, "127.0.0.1", 6510);
 connection_rate = room_speed * 2; //Check every 2 seconds for update data
 connection_count = noone;
 move_latency_max = room_speed * 2;

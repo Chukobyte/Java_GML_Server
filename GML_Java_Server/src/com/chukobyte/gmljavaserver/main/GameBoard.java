@@ -18,7 +18,13 @@ public class GameBoard {
 	}
 
 	public GameBoard() {
-		String str = readJsonFile("C:\\temp\\array_test.json");
+		String osName = System.getProperty("os.name");
+		String str;
+		if(osName.startsWith("Windows")) {
+			str = readJsonFile("C:\\temp\\array_test.json");
+		} else {
+			str = readJsonFile("/vagrant/array_test.json");
+		}
 		JSONObject json;
 		try {
 			json = new JSONObject(str);

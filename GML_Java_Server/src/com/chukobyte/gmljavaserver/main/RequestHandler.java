@@ -21,46 +21,40 @@ public class RequestHandler {
 	}
 	
 	
-	private static void prepareResponse(GMLOutputStream out, short size) throws IOException {
-		out.writeS32(MessageConstants.MAGIC_NUMBER);
-		out.writeS16(size);
+	private static void prepareResponse(GMLOutputStream out, byte messageId) throws IOException {
+		out.writeS16(MessageConstants.MAGIC_NUMBER);
+		out.writeS8(messageId);
 	}
 	
 	private static void handleGetUsersOnlineRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out) throws IOException {
-		out.writeS16(MessageConstants.MAGIC_NUMBER);
-		out.writeS8(MessageConstants.GET_USERS_ONLINE_RESPONSE);
 		String jsonText = Server.printLoggedInClients();
+		prepareResponse(out, MessageConstants.GET_USERS_ONLINE_RESPONSE);
 		out.writeString(jsonText);
 	}
 	
 	private static void handleChatLogSendRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out) throws IOException {
 		String chatLog = in.readString();
 		System.out.println("chat log: " + chatLog);
-		out.writeS16(MessageConstants.MAGIC_NUMBER);
-		out.writeS8(MessageConstants.CHAT_LOG_SEND_RESPONSE);
+		prepareResponse(out, MessageConstants.CHAT_LOG_SEND_RESPONSE);
 	}
 	
 	private static void handleUserMoveRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out) throws IOException {
 		String direction = in.readString();
-		out.writeS16(MessageConstants.MAGIC_NUMBER);
-		out.writeS8(MessageConstants.USER_MOVE_RESPONSE);
+		prepareResponse(out, MessageConstants.USER_MOVE_RESPONSE);
 		String response = client.getPlayer().getUserId() + " moved " + direction + "!";
 		System.out.println(response);
 		out.writeString(response);
 	}
 	
 	private static void handleShuffleGameBoardRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out) throws IOException {
-		out.writeS16(MessageConstants.MAGIC_NUMBER);
-		out.writeS8(MessageConstants.SHUFFLE_GAME_BOARD_RESPONSE);
+		prepareResponse(out, MessageConstants.SHUFFLE_GAME_BOARD_RESPONSE);
 		client.getGameBoard().shuffleGameBoard(); //shuffle game board
 		System.out.println(client.getPlayer().getUserId() + " Shuffled Board!");
 		out.writeString("Sucess");
 	}
 	
 	private static void handleUserIdRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out) throws IOException {
-		//Need to bind userId to Player Object
-		out.writeS16(MessageConstants.MAGIC_NUMBER);
-		out.writeS8(MessageConstants.USER_ID_RESPONSE);
+		prepareResponse(out, MessageConstants.USER_ID_RESPONSE);
 		out.writeString(client.getPlayer().getUserId());
 	}
 	
@@ -68,15 +62,13 @@ public class RequestHandler {
 		String name = in.readString();
 		client.getPlayer().setName(name);
 		System.out.println("Name : " + name);
-		out.writeS16(MessageConstants.MAGIC_NUMBER);
-		out.writeS8(MessageConstants.USER_NAME_SEND_RESPONSE);
+		prepareResponse(out, MessageConstants.USER_NAME_SEND_RESPONSE);
 		out.writeString("Sucess");
 	}
 	
 	private static void handleUpdateRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out) throws IOException {
 		System.out.println("Update requested");
-		out.writeS16(MessageConstants.MAGIC_NUMBER);
-		out.writeS8(MessageConstants.UPDATE_RESPONSE); //message id
+		prepareResponse(out, MessageConstants.UPDATE_RESPONSE);
 		String jsonText = client.getGameBoard().getGameBoardJson();
 		System.out.println(jsonText);
 		out.writeString(jsonText);

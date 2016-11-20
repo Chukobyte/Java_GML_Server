@@ -37,10 +37,10 @@
       <script>scripts\client_draw.gml</script>
       <script>scripts\client_game_end.gml</script>
       <script>scripts\client_send_request.gml</script>
+      <script>scripts\client_handle_packet.gml</script>
       <script>scripts\client_prepare_buffer.gml</script>
     </scripts>
     <scripts name="HelperScripts">
-      <script>scripts\scr_handle_packet.gml</script>
       <script>scripts\get_input.gml</script>
       <script>scripts\json_input_test.gml</script>
       <script>scripts\json_decode_two_dimensional_array.gml</script>

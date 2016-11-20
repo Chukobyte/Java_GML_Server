@@ -20,8 +20,9 @@ public class GMLOutputStream {
 	
 	private void write(int bytes) throws IOException {
 		bb.rewind();
-		for (int i=0; i<bytes; i++)
+		for(int i=0; i<bytes; i++) {
 			byteWriter.writeByte(bb.get());
+		}
 		bb.clear();
 	}
 	

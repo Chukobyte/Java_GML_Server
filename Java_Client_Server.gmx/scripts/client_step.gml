@@ -9,7 +9,13 @@ if(server != noone) {
     
     
     if(room == rm_main) {
-        if(connection_count <= 0) {
+        var chat_input_typing = false;
+        if(instance_exists(ChatInput)) {
+            if(ChatInput.player_can_type) {
+                chat_input_typing = true;
+            }
+        }
+        if(connection_count <= 0 && !chat_input_typing) {
             if(update_button) {
                 //send for update
                 client_send_request(server, buff, UPDATE_REQUEST);
