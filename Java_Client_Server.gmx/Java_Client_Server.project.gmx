@@ -39,6 +39,7 @@
       <script>scripts\client_send_request.gml</script>
       <script>scripts\client_handle_packet.gml</script>
       <script>scripts\client_prepare_buffer.gml</script>
+      <script>scripts\client_handle_request.gml</script>
     </scripts>
     <scripts name="HelperScripts">
       <script>scripts\get_input.gml</script>
