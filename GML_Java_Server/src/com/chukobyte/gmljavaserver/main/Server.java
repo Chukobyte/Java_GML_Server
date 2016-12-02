@@ -1,8 +1,10 @@
 package com.chukobyte.gmljavaserver.main;
 
+import java.awt.List;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -48,6 +50,40 @@ public class Server implements Runnable {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public static void updateGameClients() throws IOException {
+		Iterator it = clients.entrySet().iterator();
+		String jsonText = gameBoard.getGameBoardJson();
+		while(it.hasNext()) {
+			Map.Entry<String, ClientHandler> pair = (Map.Entry<String, ClientHandler>) it.next();
+			ClientHandler currentClient = pair.getValue();
+			//GMLInputStream in = currentClient.getGMLInStream();
+			GMLOutputStream out = currentClient.getGMLOutStream();
+			
+			out.writeS16(MessageConstants.MAGIC_NUMBER);
+			out.writeS8(MessageConstants.UPDATE_RESPONSE);
+			out.writeString(jsonText);
+			out.flush();
+		}
+	}
+	
+	public static ArrayList<ClientHandler> getServerClients() {
+		Iterator it = clients.entrySet().iterator();
+		ArrayList<ClientHandler> clientList = new ArrayList<ClientHandler>();
+		while(it.hasNext()) {
+			Map.Entry pair = (Map.Entry) it.next();
+			System.out.println("key: " + pair.getKey().toString()); //debug
+			ClientHandler client = (ClientHandler) pair.getValue();
+			clientList.add(client);
+			try {
+				RequestHandler.handleRequest(client, client.getGMLInStream(), client.getGMLOutStream());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return clientList;
 	}
 	
 	//Static methods to access Server object for now

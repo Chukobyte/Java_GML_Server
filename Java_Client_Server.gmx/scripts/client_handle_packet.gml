@@ -20,7 +20,7 @@ if(n_id == server) {
         show_debug_message("size_in_bytes = " + string(size_in_bytes));
         var message_id = buffer_read(buffer, buffer_s8);
         show_debug_message("message_id = " + string(message_id));
-        var success = client_handle_request(buffer, message_id);
+        var success = client_handle_response(buffer, message_id);
         if(!success) {
             buffered_message_id = message_id;
             buffering_messages = true;
@@ -29,7 +29,7 @@ if(n_id == server) {
         //Temp section until propertly handled
         //Section if number isn't magic number it must be a continuation of old stream
         response_buffered_messages += buffer_read(buffer, buffer_string);
-        var success = client_handle_request(buffer, buffered_message_id); //retry request handling
+        var success = client_handle_response(buffer, buffered_message_id); //retry request handling
         if(success) {
             buffered_message_id = noone;
             buffering_messages = false;

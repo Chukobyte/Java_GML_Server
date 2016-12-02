@@ -4,6 +4,7 @@ public class MessageConstants {
 	//REQUEST = n, RESPONSE = In * 2
 	//message ids
 	public static final short DEFAULT = 0;
+	public static final short UPDATE_ALL_REQUEST = -122; //Internal Request to update all clients
 	public static final byte USER_ID_RESPONSE = 6;
 	public static final short USER_ID_REQUEST = 3;
 	public static final short UPDATE_REQUEST = 8;

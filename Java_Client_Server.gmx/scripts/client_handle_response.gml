@@ -1,4 +1,4 @@
-///client_handle_request(buffer, message_id)
+///client_handle_response(buffer, message_id)
 
 /*
 * Returns true if full message is processed successfully

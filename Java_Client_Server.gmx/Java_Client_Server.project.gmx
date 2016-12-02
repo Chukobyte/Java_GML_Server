@@ -26,6 +26,7 @@
   <sounds name="sound"/>
   <sprites name="sprites">
     <sprite>sprites\spr_block</sprite>
+    <sprite>sprites\spr_player</sprite>
   </sprites>
   <backgrounds name="background"/>
   <paths name="paths"/>
@@ -39,7 +40,7 @@
       <script>scripts\client_send_request.gml</script>
       <script>scripts\client_handle_packet.gml</script>
       <script>scripts\client_prepare_buffer.gml</script>
-      <script>scripts\client_handle_request.gml</script>
+      <script>scripts\client_handle_response.gml</script>
     </scripts>
     <scripts name="HelperScripts">
       <script>scripts\get_input.gml</script>

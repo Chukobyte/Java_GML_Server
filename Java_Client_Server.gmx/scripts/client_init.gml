@@ -41,8 +41,8 @@ GET_USERS_ONLINE_REQUEST = 33;
 
 server = network_create_socket(network_socket_tcp);
 network_set_timeout(server, 20000, 20000); //set read and write to 20 seconds
-result = network_connect_raw(server, "192.168.33.42", 6510);
-//result = network_connect_raw(server, "127.0.0.1", 6510);
+//result = network_connect_raw(server, "192.168.33.42", 6510);
+result = network_connect_raw(server, "127.0.0.1", 6510);
 connection_rate = room_speed * 2; //Check every 2 seconds for update data
 connection_count = noone;
 move_latency_max = room_speed * 2;
@@ -53,7 +53,7 @@ player_name = "";
 direction_last_moved = "";
 //message_count = 0;
 message = noone;
-log_file = file_text_open_append(working_directory + "\logs\gml_log.txt");
+//log_file = file_text_open_append(working_directory + "\logs\gml_log.txt");
 if(result == 0) {
     buff = buffer_create(256, buffer_grow, 1);
     connection_count = connection_rate;

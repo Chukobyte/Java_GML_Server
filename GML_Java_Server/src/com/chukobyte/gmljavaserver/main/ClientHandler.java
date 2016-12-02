@@ -13,7 +13,7 @@ public class ClientHandler implements Runnable{
 	private Thread thread;
 	private boolean running = false;
 	private Player player = null;
-	private GameBoard gameBoard = null;
+	private GameBoard gameBoard = null; //all clients share static gameboard
 	
 	public ClientHandler(Socket socket, Player player, GameBoard gameBoard) throws SocketException {
 		thread = new Thread(this);
@@ -41,6 +41,14 @@ public class ClientHandler implements Runnable{
 	
 	public GameBoard getGameBoard() {
 		return gameBoard;
+	}
+	
+	public GMLInputStream getGMLInStream() {
+		return in;
+	}
+	
+	public GMLOutputStream getGMLOutStream() {
+		return out;
 	}
 	
 	@Override

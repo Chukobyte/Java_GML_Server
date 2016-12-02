@@ -1,14 +1,17 @@
 package com.chukobyte.gmljavaserver.main;
 
+import java.awt.List;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class RequestHandler {
 		
 	public static void handleRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out) throws IOException {
 		short request = in.readS8();
+		boolean flushOut = true;
 		System.out.println("Request = " + request);
 		switch (request) {
-			case MessageConstants.UPDATE_REQUEST: handleUpdateRequest(client, in, out); break;
+			case MessageConstants.UPDATE_REQUEST: handleUpdateRequest(client, in, out); flushOut = false; break;
 			case MessageConstants.USER_ID_REQUEST: handleUserIdRequest(client, in, out); break;
 			case MessageConstants.USER_NAME_SEND_REQUEST: handleUserNameSendRequest(client, in, out); break;
 			case MessageConstants.SHUFFLE_GAME_BOARD_REQUEST: handleShuffleGameBoardRequest(client, in, out); break;
@@ -17,7 +20,9 @@ public class RequestHandler {
 			case MessageConstants.GET_USERS_ONLINE_REQUEST: handleGetUsersOnlineRequest(client, in, out); break;
 			default: System.out.println("Unknown request"); break;
 		}
-		out.flush();
+		if(flushOut) {
+			out.flush();
+		}
 	}
 	
 	
@@ -34,7 +39,7 @@ public class RequestHandler {
 	
 	private static void handleChatLogSendRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out) throws IOException {
 		String chatLog = in.readString();
-		System.out.println("chat log: " + chatLog);
+		System.out.println(client.getPlayer().getName() + ": " + chatLog);
 		prepareResponse(out, MessageConstants.CHAT_LOG_SEND_RESPONSE);
 	}
 	
@@ -67,10 +72,9 @@ public class RequestHandler {
 	}
 	
 	private static void handleUpdateRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out) throws IOException {
-		System.out.println("Update requested");
-		prepareResponse(out, MessageConstants.UPDATE_RESPONSE);
-		String jsonText = client.getGameBoard().getGameBoardJson();
-		System.out.println(jsonText);
-		out.writeString(jsonText);
+		System.out.println("Initial Update requested from " + client.getPlayer().getUserId());
+		Server.updateGameClients(); //loops through game clients in Server class for now
 	}
+	
+	
 }
