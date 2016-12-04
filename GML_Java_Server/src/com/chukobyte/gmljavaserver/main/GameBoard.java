@@ -17,11 +17,40 @@ public class GameBoard {
 		return boardArray;
 	}
 
+//	public GameBoard() {
+//		String osName = System.getProperty("os.name");
+//		String str;
+//		if(osName.startsWith("Windows")) {
+//			str = readJsonFile("C:\\temp\\array_test.json");
+//		} else {
+//			str = readJsonFile("/vagrant/array_test.json");
+//		}
+//		JSONObject json;
+//		try {
+//			json = new JSONObject(str);
+//			JSONArray gridArray = (JSONArray) json.get("grid_array");
+//			int gridSqu = (int) Math.sqrt(gridArray.length());
+//			//System.out.println(gridSqu);
+//			boardArray = new String[gridSqu][gridSqu];
+//			// loop through array to define two dimensionsal array
+//			for (int i = 0; i < gridArray.length(); i++) {
+//				JSONObject jsonArr = (JSONObject) gridArray.get(i);
+//				int row = jsonArr.getInt("row");
+//				int col = jsonArr.getInt("col");
+//				String val = jsonArr.getString("val");
+//				boardArray[row][col] = val;
+//			}
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
+	
 	public GameBoard() {
 		String osName = System.getProperty("os.name");
 		String str;
 		if(osName.startsWith("Windows")) {
-			str = readJsonFile("C:\\temp\\array_test.json");
+			str = readJsonFile("C:\\temp\\json_game.json");
 		} else {
 			str = readJsonFile("/vagrant/array_test.json");
 		}
@@ -37,8 +66,8 @@ public class GameBoard {
 				JSONObject jsonArr = (JSONObject) gridArray.get(i);
 				int row = jsonArr.getInt("row");
 				int col = jsonArr.getInt("col");
-				String val = jsonArr.getString("val");
-				boardArray[row][col] = val;
+				JSONObject jObj = jsonArr.getJSONObject("val");
+				boardArray[row][col] = jObj.toString();
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -49,7 +78,14 @@ public class GameBoard {
 	public void shuffleGameBoard() {
 		for(int i = 0; i < 3; i++) {
 			for(int j = 0; j < 3; j++) {
-				boardArray[i][j] = getRandomColor();
+				try {
+					JSONObject boardJson = new JSONObject(boardArray[i][j]);
+					boardJson.put("color", getRandomColor());
+					boardArray[i][j] = boardJson.toString();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -88,6 +124,35 @@ public class GameBoard {
 	}
 	
 	public String getGameBoardJson() {
+		String jsonText = "";
+		try {
+			JSONObject json = new JSONObject();
+			JSONArray jsonArray;
+			jsonArray = new JSONArray(getGameBoard());
+			int arrayIndex = 0;
+			
+			// Creates JSON object then converts to string
+			for(int i = 0; i < 3; i++) {
+				for(int j = 0; j < 3; j++) {
+					JSONObject jo = new JSONObject();
+					JSONObject valObj = new JSONObject(boardArray[i][j]);
+					jo.put("row", i);
+					jo.put("col", j);
+					jo.put("val", valObj);
+					jsonArray.put(arrayIndex, jo);
+					arrayIndex++;
+				}
+			}
+			json.put("grid_array", jsonArray);
+			jsonText = json.toString();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return jsonText;
+	}
+	
+	public String writeJsonTest() {
 		String jsonText = "";
 		try {
 			JSONObject json = new JSONObject();
@@ -142,6 +207,10 @@ public class GameBoard {
 		}
 
 		return jsonText;
+	}
+	
+	public void setGameBoardPanel(int row, int col, String val) {
+		boardArray[row][col] = val;
 	}
 
 }

@@ -34,8 +34,12 @@ switch(message_id) {
     case USER_ID_RESPONSE:
         var response = buffer_read(buffer, buffer_string);
         user_id = response;
-        show_debug_message("USER_ID = " + response);
+        show_debug_message("USER_ID = " + user_id);
         succeeded = true;
+        response = buffer_read(buffer, buffer_s16);
+        player_row = response;
+        response = buffer_read(buffer, buffer_s16);
+        player_col = response;
         break;
                 
     case USER_NAME_SEND_RESPONSE:
@@ -74,9 +78,9 @@ switch(message_id) {
             show_debug_message("Users: " + string(ds_list_size(users_list)));
             for(var i = 0; i < ds_list_size(users_list); i++) {
                 var list_map = ds_list_find_value(users_list, i);
-                var user_id = ds_map_find_value(list_map, "user_id");
+                var uid = ds_map_find_value(list_map, "user_id");
                 var player_name = ds_map_find_value(list_map, "player_name");
-                show_debug_message("user_id = " + string(user_id) + "  |  player_name = " + string(player_name));
+                show_debug_message("user_id = " + string(uid) + "  |  player_name = " + string(player_name));
                 ds_map_destroy(list_map);
             }
             succeeded = true;

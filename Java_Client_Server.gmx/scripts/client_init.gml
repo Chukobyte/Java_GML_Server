@@ -1,7 +1,7 @@
 ///client_init()
 
 //json test
-json_file = working_directory + "\\array_test.json";
+json_file = working_directory + "\\json_game.txt";
 var file = file_text_open_read(json_file);
 json_str = "";
 while(!file_text_eoln(file)) {
@@ -38,6 +38,10 @@ CHAT_LOG_SEND_RESPONSE = 88;
 CHAT_LOG_SEND_REQUEST = 44;
 GET_USERS_ONLINE_RESPONSE = 66;
 GET_USERS_ONLINE_REQUEST = 33;
+
+//player stats
+player_row = noone;
+player_col = noone;
 
 server = network_create_socket(network_socket_tcp);
 network_set_timeout(server, 20000, 20000); //set read and write to 20 seconds

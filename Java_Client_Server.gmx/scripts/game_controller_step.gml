@@ -106,7 +106,9 @@ switch(room) {
             //show_debug_message("update init");
             for(var i = 0; i < 3; i++) {
                 for(var j = 0; j < 3; j++) {
-                    var new_color = asset_get_index(game_board_array[i, j]);
+                    var panel_map = json_decode(game_board_array[i, j]);
+                    
+                    var new_color = asset_get_index(string(ds_map_find_value(panel_map, "color")));
                     panel_board_array[i, j].image_blend = new_color;
                 }
             }

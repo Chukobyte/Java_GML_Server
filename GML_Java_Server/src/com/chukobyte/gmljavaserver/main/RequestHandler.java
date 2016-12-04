@@ -4,6 +4,9 @@ import java.awt.List;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class RequestHandler {
 		
 	public static void handleRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out) throws IOException {
@@ -61,6 +64,34 @@ public class RequestHandler {
 	private static void handleUserIdRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out) throws IOException {
 		prepareResponse(out, MessageConstants.USER_ID_RESPONSE);
 		out.writeString(client.getPlayer().getUserId());
+		
+		//Assigns a player to an empty Panel
+		String[][] panelArray = client.getGameBoard().getGameBoard();
+		boolean playerFound = false;
+		//Need to send empty panel coords
+		for(short i = 0; i < client.getGameBoard().getGameBoard().length; i++) {
+			for(short j = 0; j < client.getGameBoard().getGameBoard().length; j++) {
+				try {
+					JSONObject boardJson = new JSONObject(panelArray[i][j]);
+					System.out.println(boardJson.toString());
+					String playerSlot = boardJson.getString("player");
+					if(playerSlot.equals("") && !playerFound) {
+						System.out.println("row: " + i + " | col: " + j);
+						out.writeS16(i); //row
+						out.writeS16(j); //col
+						client.getPlayer().setPanelRowCol(i, j);
+						boardJson.put("player", client.getPlayer().getUserId());
+						client.getGameBoard().setGameBoardPanel(i, j, boardJson.toString());
+						System.out.println("New Panel Json:\n" + panelArray[i][j]);
+						playerFound = true;
+					}
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
 	}
 	
 	private static void handleUserNameSendRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out) throws IOException {

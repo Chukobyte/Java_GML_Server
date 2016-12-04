@@ -121,7 +121,40 @@ public class Server implements Runnable {
 	}
 	
 	public static void removeClientHandler(String userId) {
+		removePlayerFromPanel(userId);
 		clients.remove(userId);
+	}
+	
+	public static void removePlayerFromPanel(String userId) {
+		try {
+			//removes player ref from gameboard
+			ClientHandler client = clients.get(userId);
+			short row = client.getPlayer().getPanelRow();
+			short col = client.getPlayer().getPanelCol();
+			
+			JSONObject panelObj = new JSONObject(gameBoard.getGameBoard()[row][col]);
+			panelObj.put("player", "");
+			gameBoard.setGameBoardPanel(row, col, panelObj.toString());
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void addPlayerToPanel(String userId) {
+//		try {
+//			//removes player ref from gameboard
+//			ClientHandler client = clients.get(userId);
+//			short row = client.getPlayer().getPanelRow();
+//			short col = client.getPlayer().getPanelCol();
+//			
+//			JSONObject panelObj = new JSONObject(gameBoard.getGameBoard()[row][col]);
+//			panelObj.put("player", "");
+//			gameBoard.setGameBoardPanel(row, col, panelObj.toString());
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
 	// Shutdown the server.

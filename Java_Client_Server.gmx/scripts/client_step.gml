@@ -60,5 +60,10 @@ if(server != noone) {
         */
         
     }
+    
+    if(player_row != noone && player_col != noone && GameController.panel_board_array != noone) {
+        x = GameController.panel_board_array[player_row, player_col].x;
+        y = GameController.panel_board_array[player_row, player_col].y;
+    }
 }
 

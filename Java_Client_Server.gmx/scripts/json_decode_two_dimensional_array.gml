@@ -16,10 +16,13 @@ for(var i = 0; i < ds_list_size(array_list); i++) {
     var array_map = ds_list_find_value(array_list, i);
     var row =  real(ds_map_find_value(array_map, "row"));
     var col = real(ds_map_find_value(array_map, "col"));
-    var val = ds_map_find_value(array_map, "val");
+    var val_map = ds_map_find_value(array_map, "val");
+    val_json = json_encode(val_map);
+    show_debug_message(val_json);
     
     //create array entry
-    new_array[row, col] = val;
+    new_array[row, col] = string(val_json);
+    ds_map_destroy(val_map);
     ds_map_destroy(array_map);
 }
 
