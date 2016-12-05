@@ -42,6 +42,7 @@ switch(message_id) {
         //client_send_request(server, buffer, GET_USERS_ONLINE_RESPONSE);
         ds_map_add(GameController.player_client_map, user_id, client_player);
         client_player.user_id = user_id;
+        //client_send_request(server, buffer, GET_USERS_ONLINE_RESPONSE);
         client_player.panel_row = buffer_read(buffer, buffer_s16);
         client_player.panel_col = buffer_read(buffer, buffer_s16);
         
@@ -90,8 +91,13 @@ switch(message_id) {
                 var list_map = ds_list_find_value(users_list, i);
                 var uid = ds_map_find_value(list_map, "user_id");
                 var player_name = ds_map_find_value(list_map, "player_name");
-                var panel_row = ds_map_find_value(list_map, "panel_row");
-                var panel_col = ds_map_find_value(list_map, "panel_col");
+                with(Player) {
+                    if(user_id == uid) {
+                        show_debug_message("Updating " + string(uid));
+                        panel_row = ds_map_find_value(list_map, "panel_row");
+                        panel_col = ds_map_find_value(list_map, "panel_col");
+                    }
+                }
                 //show_debug_message("user_id = " + string(uid) + "  |  player_name = " + string(player_name));
                 ds_map_destroy(list_map);
             }
