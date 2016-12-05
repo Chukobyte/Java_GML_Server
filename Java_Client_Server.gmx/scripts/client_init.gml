@@ -40,8 +40,9 @@ GET_USERS_ONLINE_RESPONSE = 66;
 GET_USERS_ONLINE_REQUEST = 33;
 
 //player stats
-player_row = noone;
-player_col = noone;
+client_player = noone;
+//player_row = noone;
+//player_col = noone;
 
 server = network_create_socket(network_socket_tcp);
 network_set_timeout(server, 20000, 20000); //set read and write to 20 seconds

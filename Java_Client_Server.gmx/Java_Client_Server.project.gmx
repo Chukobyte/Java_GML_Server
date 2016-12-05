@@ -68,6 +68,10 @@
       <script>scripts\chat_get_input.gml</script>
       <script>scripts\reset_typed_array.gml</script>
     </scripts>
+    <scripts name="Player">
+      <script>scripts\player_init.gml</script>
+      <script>scripts\player_draw.gml</script>
+    </scripts>
   </scripts>
   <objects name="objects">
     <object>objects\Client</object>
@@ -76,6 +80,7 @@
     <object>objects\DeltaTracker</object>
     <object>objects\ChatLog</object>
     <object>objects\ChatInput</object>
+    <object>objects\Player</object>
   </objects>
   <rooms name="rooms">
     <room>rooms\rm_initialize</room>

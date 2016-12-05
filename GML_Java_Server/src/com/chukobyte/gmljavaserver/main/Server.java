@@ -110,6 +110,8 @@ public class Server implements Runnable {
 			System.out.println(mapText);
 			jo.put("user_id", mapKey);
 			jo.put("player_name", mapValue);
+			jo.put("panel_row", client.getPlayer().getPanelRow());
+			jo.put("panel_col", client.getPlayer().getPanelCol());
 			jsArray.put(jo);
 		}
 		json.put("clients", jsArray);
@@ -121,11 +123,11 @@ public class Server implements Runnable {
 	}
 	
 	public static void removeClientHandler(String userId) {
-		removePlayerFromPanel(userId);
+		removePlayerFromCurrentPanel(userId);
 		clients.remove(userId);
 	}
 	
-	public static void removePlayerFromPanel(String userId) {
+	public static void removePlayerFromCurrentPanel(String userId) {
 		try {
 			//removes player ref from gameboard
 			ClientHandler client = clients.get(userId);
@@ -141,20 +143,22 @@ public class Server implements Runnable {
 		}
 	}
 	
-	public static void addPlayerToPanel(String userId) {
-//		try {
-//			//removes player ref from gameboard
-//			ClientHandler client = clients.get(userId);
-//			short row = client.getPlayer().getPanelRow();
-//			short col = client.getPlayer().getPanelCol();
-//			
-//			JSONObject panelObj = new JSONObject(gameBoard.getGameBoard()[row][col]);
-//			panelObj.put("player", "");
-//			gameBoard.setGameBoardPanel(row, col, panelObj.toString());
-//		} catch (JSONException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+	public static void addPlayerToPanel(String userId, short newRow, short newCol) {
+		try {
+			//removes player ref from gameboard
+			ClientHandler client = clients.get(userId);
+			short currentRow = client.getPlayer().getPanelRow();
+			short currentCol = client.getPlayer().getPanelCol();
+			
+			removePlayerFromCurrentPanel(userId); //Remove from current panel first
+			JSONObject panelObj = new JSONObject(gameBoard.getGameBoard()[newRow][newCol]);
+			panelObj.put("player", userId);
+			client.getPlayer().setPanelRowCol(newRow, newCol);
+			gameBoard.setGameBoardPanel(newRow, newCol, panelObj.toString());
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	// Shutdown the server.

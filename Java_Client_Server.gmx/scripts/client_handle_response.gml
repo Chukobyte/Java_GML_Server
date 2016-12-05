@@ -36,10 +36,18 @@ switch(message_id) {
         user_id = response;
         show_debug_message("USER_ID = " + user_id);
         succeeded = true;
-        response = buffer_read(buffer, buffer_s16);
-        player_row = response;
-        response = buffer_read(buffer, buffer_s16);
-        player_col = response;
+        //response = buffer_read(buffer, buffer_s16);
+        client_player = instance_create(x, y, Player);
+        //will send for update
+        //client_send_request(server, buffer, GET_USERS_ONLINE_RESPONSE);
+        ds_map_add(GameController.player_client_map, user_id, client_player);
+        client_player.user_id = user_id;
+        client_player.panel_row = buffer_read(buffer, buffer_s16);
+        client_player.panel_col = buffer_read(buffer, buffer_s16);
+        
+        //player_row = response;
+        //response = buffer_read(buffer, buffer_s16);
+        //player_col = response;
         break;
                 
     case USER_NAME_SEND_RESPONSE:
@@ -57,6 +65,8 @@ switch(message_id) {
     case USER_MOVE_RESPONSE:
         var response = buffer_read(buffer, buffer_string);
         show_debug_message("Response: " + response);
+        client_player.panel_row = buffer_read(buffer, buffer_s16);
+        client_player.panel_col = buffer_read(buffer, buffer_s16);
         succeeded = true;
         break;
                 
@@ -80,7 +90,9 @@ switch(message_id) {
                 var list_map = ds_list_find_value(users_list, i);
                 var uid = ds_map_find_value(list_map, "user_id");
                 var player_name = ds_map_find_value(list_map, "player_name");
-                show_debug_message("user_id = " + string(uid) + "  |  player_name = " + string(player_name));
+                var panel_row = ds_map_find_value(list_map, "panel_row");
+                var panel_col = ds_map_find_value(list_map, "panel_col");
+                //show_debug_message("user_id = " + string(uid) + "  |  player_name = " + string(player_name));
                 ds_map_destroy(list_map);
             }
             succeeded = true;

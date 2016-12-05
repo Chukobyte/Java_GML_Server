@@ -11,7 +11,9 @@ switch(room) {
         draw_rectangle(x1, y1, x2, y2, true);
         break;
     case rm_main:
-        draw_text(10, 10, "player_name: " + Client.player_name + "#row: " + string(Client.player_row) + " , col: " + string(Client.player_col));
+        if(Client.client_player != noone) {
+                    draw_text(10, 10, "player_name: " + Client.player_name + "#row: " + string(Client.client_player.panel_row) + " , col: " + string(Client.client_player.panel_col));
+        }
         var x1 = room_width - room_width div 4;
         var x2 = (room_width - room_width div 4) + 120;
         var y1 = (room_height - room_height div 4) - 120;

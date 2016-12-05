@@ -37,8 +37,6 @@ if(server != noone) {
     
     
     if(move_latency <= 0) {
-    
-        /*
                 
         if(left) {
             direction_last_moved = "left";
@@ -57,13 +55,14 @@ if(server != noone) {
             client_send_request(server, buff, USER_MOVE_REQUEST);
             move_latency = move_latency_max;
         }
-        */
         
     }
-    
-    if(player_row != noone && player_col != noone && GameController.panel_board_array != noone) {
-        x = GameController.panel_board_array[player_row, player_col].x;
-        y = GameController.panel_board_array[player_row, player_col].y;
+    if(client_player != noone) {
+        if(client_player.panel_row != noone && client_player.panel_col != noone && GameController.panel_board_array != noone) {
+            client_player.x = GameController.panel_board_array[client_player.panel_row, client_player.panel_col].x;
+            client_player.y = GameController.panel_board_array[client_player.panel_row, client_player.panel_col].y;
+        }
     }
+    
 }
 

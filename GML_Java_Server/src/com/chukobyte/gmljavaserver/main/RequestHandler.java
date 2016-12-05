@@ -49,9 +49,37 @@ public class RequestHandler {
 	private static void handleUserMoveRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out) throws IOException {
 		String direction = in.readString();
 		prepareResponse(out, MessageConstants.USER_MOVE_RESPONSE);
+		short newRow = -1;
+		short newCol = -1;
+		switch(direction) {
+			case "left":
+				newRow = client.getPlayer().getPanelRow();
+				newCol = (short) (client.getPlayer().getPanelCol() - 1);
+				Server.addPlayerToPanel(client.getPlayer().getUserId(), newRow, newCol);
+				break;
+			case "right":
+				newRow = client.getPlayer().getPanelRow();
+				newCol = (short) (client.getPlayer().getPanelCol() + 1);
+				Server.addPlayerToPanel(client.getPlayer().getUserId(), newRow, newCol);
+				break;
+			case "up":
+				newRow = (short) (client.getPlayer().getPanelRow() - 1);
+				newCol = client.getPlayer().getPanelCol();
+				Server.addPlayerToPanel(client.getPlayer().getUserId(), newRow, newCol);
+				break;
+			case "down":
+				newRow = (short) (client.getPlayer().getPanelRow() + 1);
+				newCol = client.getPlayer().getPanelCol();
+				Server.addPlayerToPanel(client.getPlayer().getUserId(), newRow, newCol);
+				break;
+			default:
+				break;
+		}
 		String response = client.getPlayer().getUserId() + " moved " + direction + "!";
 		System.out.println(response);
 		out.writeString(response);
+		out.writeS16(newRow);
+		out.writeS16(newCol);
 	}
 	
 	private static void handleShuffleGameBoardRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out) throws IOException {
