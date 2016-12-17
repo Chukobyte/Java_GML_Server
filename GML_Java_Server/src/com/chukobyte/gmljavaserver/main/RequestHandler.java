@@ -21,17 +21,23 @@ public class RequestHandler {
 			case MessageConstants.USER_MOVE_REQUEST: handleUserMoveRequest(client, in, out); break;
 			case MessageConstants.CHAT_LOG_SEND_REQUEST: handleChatLogSendRequest(client, in, out); break;
 			case MessageConstants.GET_USERS_ONLINE_REQUEST: handleGetUsersOnlineRequest(client, in, out); break;
+			case MessageConstants.GET_INITIAL_USERS_ONLINE_REQUEST: handleGetInitialUsersOnlineRequest(client, in, out); break;
 			default: System.out.println("Unknown request"); break;
 		}
 		if(flushOut) {
 			out.flush();
 		}
 	}
-	
-	
+
 	private static void prepareResponse(GMLOutputStream out, byte messageId) throws IOException {
 		out.writeS16(MessageConstants.MAGIC_NUMBER);
 		out.writeS8(messageId);
+	}
+	
+	private static void handleGetInitialUsersOnlineRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out) throws IOException {
+		String jsonText = Server.printLoggedInClients();
+		prepareResponse(out, MessageConstants.GET_INITIAL_USERS_ONLINE_RESPONSE);
+		out.writeString(jsonText);
 	}
 	
 	private static void handleGetUsersOnlineRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out) throws IOException {

@@ -19,5 +19,7 @@ public class MessageConstants {
 	public static final short USER_MOVE_REQUEST = 32;
 	public static final byte GET_USERS_ONLINE_RESPONSE = 66;
 	public static final short GET_USERS_ONLINE_REQUEST = 33;
+	public static final byte GET_INITIAL_USERS_ONLINE_RESPONSE = 2;
+	public static final short GET_INITIAL_USERS_ONLINE_REQUEST = 1;
 	public static final short MAGIC_NUMBER = 12313;
 }

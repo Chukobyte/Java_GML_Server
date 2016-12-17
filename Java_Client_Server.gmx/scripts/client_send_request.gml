@@ -50,6 +50,11 @@ switch(request) {
         show_debug_message("Get Users Online Requested!");
         network_send_packet(socket, buffer, buffer_tell(buffer));
         break;
+        
+    case Client.GET_INITIAL_USERS_ONLINE_REQUEST:
+        show_debug_message("Get Users Online Requested!");
+        network_send_packet(socket, buffer, buffer_tell(buffer));
+        break;
 
     default:
         show_debug_message("Unknown ID trying to send");

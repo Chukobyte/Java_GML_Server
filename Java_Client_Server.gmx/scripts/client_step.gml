@@ -57,12 +57,12 @@ if(server != noone) {
         
             }
             
-            if(client_player != noone) {
-                if(client_player.panel_row != noone && client_player.panel_col != noone && GameController.panel_board_array != noone) {
-                    client_player.x = GameController.panel_board_array[client_player.panel_row, client_player.panel_col].x;
-                    client_player.y = GameController.panel_board_array[client_player.panel_row, client_player.panel_col].y;
-                }
-            }
+            //if(client_player != noone) {
+            //    if(client_player.panel_row != noone && client_player.panel_col != noone && GameController.panel_board_array != noone) {
+            //        client_player.x = GameController.panel_board_array[client_player.panel_row, client_player.panel_col].x;
+            //        client_player.y = GameController.panel_board_array[client_player.panel_row, client_player.panel_col].y;
+            //    }
+           // }
             break;
             
     }

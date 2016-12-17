@@ -70,6 +70,7 @@
     </scripts>
     <scripts name="Player">
       <script>scripts\player_init.gml</script>
+      <script>scripts\player_step.gml</script>
       <script>scripts\player_draw.gml</script>
     </scripts>
   </scripts>
