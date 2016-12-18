@@ -58,12 +58,39 @@ public class Server implements Runnable {
 		while(it.hasNext()) {
 			Map.Entry<String, ClientHandler> pair = (Map.Entry<String, ClientHandler>) it.next();
 			ClientHandler currentClient = pair.getValue();
-			//GMLInputStream in = currentClient.getGMLInStream();
 			GMLOutputStream out = currentClient.getGMLOutStream();
 			
 			out.writeS16(MessageConstants.MAGIC_NUMBER);
 			out.writeS8(MessageConstants.UPDATE_RESPONSE);
 			out.writeString(jsonText);
+			out.flush();
+		}
+	}
+	
+	public static void createUserAll(String userId) throws IOException {
+		Iterator it = clients.entrySet().iterator();
+		while(it.hasNext()) {
+			Map.Entry<String, ClientHandler> pair = (Map.Entry<String, ClientHandler>) it.next();
+			ClientHandler currentClient = pair.getValue();
+			GMLOutputStream out = currentClient.getGMLOutStream();
+			
+			out.writeS16(MessageConstants.MAGIC_NUMBER);
+			out.writeS8(MessageConstants.CREATE_USER_RESPONSE);
+			out.writeString(userId);
+			out.flush();
+		}
+	}
+	
+	public static void deleteUserAll(String userId) throws IOException {
+		Iterator it = clients.entrySet().iterator();
+		while(it.hasNext()) {
+			Map.Entry<String, ClientHandler> pair = (Map.Entry<String, ClientHandler>) it.next();
+			ClientHandler currentClient = pair.getValue();
+			GMLOutputStream out = currentClient.getGMLOutStream();
+			
+			out.writeS16(MessageConstants.MAGIC_NUMBER);
+			out.writeS8(MessageConstants.DELETE_USER_RESPONSE);
+			out.writeString(userId);
 			out.flush();
 		}
 	}
@@ -123,12 +150,19 @@ public class Server implements Runnable {
 	}
 	
 	public static void removeClientHandler(String userId) {
-		removePlayerFromCurrentPanel(userId);
-		clients.remove(userId);
+		try {
+			removePlayerFromCurrentPanel(userId);
+			clients.remove(userId);
+			deleteUserAll(userId);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static void removePlayerFromCurrentPanel(String userId) {
 		try {
+			System.out.println("Board before: \n" + gameBoard.getGameBoardJson()); //debug
 			//removes player ref from gameboard
 			ClientHandler client = clients.get(userId);
 			short row = client.getPlayer().getPanelRow();
@@ -137,6 +171,7 @@ public class Server implements Runnable {
 			JSONObject panelObj = new JSONObject(gameBoard.getGameBoard()[row][col]);
 			panelObj.put("player", "");
 			gameBoard.setGameBoardPanel(row, col, panelObj.toString());
+			System.out.println("Board after: \n" + gameBoard.getGameBoardJson()); //debug
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

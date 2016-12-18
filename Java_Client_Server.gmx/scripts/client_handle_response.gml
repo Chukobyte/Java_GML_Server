@@ -141,6 +141,17 @@ switch(message_id) {
         }
         ds_map_destroy(online_users_map);
         break;
+        
+    case DELETE_USER_RESPONSE:
+        var delete_user_id = buffer_read(buffer, buffer_string);
+        with(Player) {
+            if(user_id == delete_user_id) {
+                instance_destroy();
+            }
+        }
+        show_debug_message("user_id = " + string(delete_user_id));
+        succeeded = true;
+        break;
             
     //Set to noone if message_id isn't found    
     default:
