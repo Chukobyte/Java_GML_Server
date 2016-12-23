@@ -45,6 +45,7 @@ switch(message_id) {
         //client_send_request(server, buffer, GET_USERS_ONLINE_RESPONSE);
         client_player.panel_row = buffer_read(buffer, buffer_s16);
         client_player.panel_col = buffer_read(buffer, buffer_s16);
+        show_debug_message("Client Player: " + string(client_player));
         //get initial users
        // client_send_request(server, buffer, GET_INITIAL_USERS_ONLINE_REQUEST);
         
@@ -133,6 +134,7 @@ switch(message_id) {
                     other_player.player_name = ds_map_find_value(list_map, "player_name");
                     other_player.panel_row = ds_map_find_value(list_map, "panel_row");
                     other_player.panel_col = ds_map_find_value(list_map, "panel_col");
+                    ds_map_add(GameController.player_client_map, other_player.user_id, other_player);
                 }            
                 ds_map_destroy(list_map);
             }
@@ -146,10 +148,28 @@ switch(message_id) {
         var delete_user_id = buffer_read(buffer, buffer_string);
         with(Player) {
             if(user_id == delete_user_id) {
+                ds_map_delete(GameController.player_client_map, user_id);
                 instance_destroy();
             }
         }
         show_debug_message("user_id = " + string(delete_user_id));
+        succeeded = true;
+        break;
+        
+    case CREATE_USER_RESPONSE:
+        //Need to get json string
+        var json_response = buffer_read(buffer, buffer_string);
+        var user_map = json_decode(json_response);
+        if(user_map != noone) {
+            var new_player = instance_create(0, 0, Player);
+            new_player.user_id = ds_map_find_value(user_map, "user_id");
+            new_player.player_name = ds_map_find_value(user_map, "player_name");
+            new_player.panel_row = ds_map_find_value(user_map, "row");
+            new_player.panel_col = ds_map_find_value(user_map, "col");
+            ds_map_add(GameController.player_client_map, new_player.user_id, new_player);
+            show_debug_message("user_id = " + string(new_player.user_id));
+        }
+        ds_map_destroy(user_map);
         succeeded = true;
         break;
             

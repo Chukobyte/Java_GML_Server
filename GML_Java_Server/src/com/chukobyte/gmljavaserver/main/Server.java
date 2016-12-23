@@ -67,17 +67,29 @@ public class Server implements Runnable {
 		}
 	}
 	
-	public static void createUserAll(String userId) throws IOException {
+	public static void createUser(String userId, String playerName, short row, short col, ClientHandler clientToExclude) throws IOException {
 		Iterator it = clients.entrySet().iterator();
+		JSONObject json = new JSONObject();
+		try {
+			json.put("user_id", userId);
+			json.put("player_name", playerNumber);
+			json.put("row", row);
+			json.put("col", col);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		while(it.hasNext()) {
 			Map.Entry<String, ClientHandler> pair = (Map.Entry<String, ClientHandler>) it.next();
 			ClientHandler currentClient = pair.getValue();
-			GMLOutputStream out = currentClient.getGMLOutStream();
-			
-			out.writeS16(MessageConstants.MAGIC_NUMBER);
-			out.writeS8(MessageConstants.CREATE_USER_RESPONSE);
-			out.writeString(userId);
-			out.flush();
+			if(!currentClient.equals(clientToExclude)) {
+				GMLOutputStream out = currentClient.getGMLOutStream();
+				out.writeS16(MessageConstants.MAGIC_NUMBER);
+				out.writeS8(MessageConstants.CREATE_USER_RESPONSE);
+				out.writeString(json.toString());
+				//out.writeString(userId);
+				out.flush();
+			}
 		}
 	}
 	

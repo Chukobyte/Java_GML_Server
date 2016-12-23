@@ -113,6 +113,8 @@ public class RequestHandler {
 		String[][] panelArray = client.getGameBoard().getGameBoard();
 		boolean playerFound = false;
 		//Need to send empty panel coords
+		short foundPanelCol = -4;
+		short foundPanelRow = -4;
 		for(short i = 0; i < client.getGameBoard().getGameBoard().length; i++) {
 			for(short j = 0; j < client.getGameBoard().getGameBoard().length; j++) {
 				try {
@@ -121,8 +123,10 @@ public class RequestHandler {
 					String playerSlot = boardJson.getString("player");
 					if(playerSlot.equals("") && !playerFound) {
 						System.out.println("row: " + i + " | col: " + j);
-						out.writeS16(i); //row
-						out.writeS16(j); //col
+						foundPanelRow = i;
+						foundPanelCol = j;
+						out.writeS16(foundPanelRow);
+						out.writeS16(foundPanelCol);
 						client.getPlayer().setPanelRowCol(i, j);
 						boardJson.put("player", client.getPlayer().getUserId());
 						client.getGameBoard().setGameBoardPanel(i, j, boardJson.toString());
@@ -135,6 +139,8 @@ public class RequestHandler {
 				}
 			}
 		}
+		
+		Server.createUser(client.getPlayer().getUserId(), "New Player", foundPanelRow, foundPanelCol, client);
 		
 	}
 	
