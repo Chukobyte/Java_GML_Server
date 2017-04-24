@@ -53,7 +53,7 @@ client_player = noone;
 server = network_create_socket(network_socket_tcp);
 network_set_timeout(server, 20000, 20000); //set read and write to 20 seconds
 //result = network_connect_raw(server, "192.168.33.42", 6510);
-result = network_connect_raw(server, "127.0.0.1", 6510);
+result = network_connect_raw(server, "73.198.28.194", 6510);
 connection_rate = room_speed * 2; //Check every 2 seconds for update data
 connection_count = noone;
 move_latency_max = room_speed * 2;
