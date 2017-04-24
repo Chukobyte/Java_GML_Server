@@ -45,6 +45,10 @@ DELETE_USER_REQUEST = 100;
 CREATE_USER_RESPONSE = 103;
 CREATE_USER_REQUEST = 102;
 
+//Other Constants
+MESSAGE_ID = "message_id";
+MESSAGE_CONTENT = "content";
+
 //player stats
 client_player = noone;
 //player_row = noone;
