@@ -15,9 +15,9 @@ var json_text = json_encode(json_map);
 show_debug_message("json_map = " + json_text);
 var succeeded = false;
 
-if(!ds_map_exists(json_map, MESSAGE_ID)) {
-    return succeeded;
-}
+//if(!ds_map_exists(json_map, MESSAGE_CONTENT)) {
+//    return succeeded;
+//}
 
 
 var message_id = floor(ds_map_find_value(json_map, MESSAGE_ID));
@@ -27,7 +27,8 @@ var content = ds_map_find_value(json_map, MESSAGE_CONTENT);
 switch(message_id) {
     //String json responses are accumalated in buffering_messages along with buffered_message_id
     case UPDATE_RESPONSE:        
-        var new_board_array = json_decode_two_dimensional_array(content);
+        var new_board_array = json_decode_two_dimensional_array(json_encode(content));
+        show_debug_message("update_response: " + string(new_board_array));
         if(new_board_array != noone) {
             GameController.game_board_array = new_board_array;
             GameController.update_board = true;
@@ -36,37 +37,33 @@ switch(message_id) {
         break;    
                 
     case USER_ID_RESPONSE:
-        var response_map = json_decode(content);
-        if(response_map != noone) {
-            user_id = ds_map_find_value(response_map, "user_id");
+        if(content != noone) {
+            user_id = ds_map_find_value(content, "user_id");
+            show_debug_message("user_id = " + string(user_id));
             succeeded = true;
             client_player = instance_create(x, y, Player);
             client_player.user_id = user_id;
-            client_player.panel_row = real(ds_map_find_value(response_map, "panel_row"));
-            client_player.panel_col = real(ds_map_find_value(response_map, "panel_col"));
+            client_player.panel_row = real(ds_map_find_value(content, "panel_row"));
+            client_player.panel_col = real(ds_map_find_value(content, "panel_col"));
         }
-        ds_map_destroy(response_map);
         break;
                 
     case USER_NAME_SEND_RESPONSE:
-        var response_map = json_decode(content);
-        if(response_map != noone) {
-            var success = ds_map_find_value(response_map, "succeed");
-            show_debug_message("USER_SEND_SUCCESS = " + string(success));
+        if(content != noone) {
+            var success = ds_map_find_value(content, "succeed");
+            show_debug_message("USER_NAME_SEND_SUCCESS = " + string(success));
             succeeded = true;
             client_send_request(server, buffer, GET_INITIAL_USERS_ONLINE_REQUEST);
         }
-        ds_map_destroy(response_map);    
         break;
                 
     case SHUFFLE_GAME_BOARD_RESPONSE:
-        var response_map = json_decode(content);
-        if(response_map != noone) {
-            var success = ds_map_find_value(response_map, "succeed");
+        if(content != noone) {
+            
+            var success = ds_map_find_value(content, "message");
             show_debug_message("SHUFFLE_GAME_BOARD_SUCCESS = " + string(success));
             succeeded = true;
         }
-        ds_map_destroy(response_map); 
         break;
                 
     case USER_MOVE_RESPONSE:
@@ -84,12 +81,11 @@ switch(message_id) {
         break;
                 
     case GET_USERS_ONLINE_RESPONSE:
-        var response_map = json_decode(content);
-        if(response_map != noone) {
+        if(content != noone) {
             //var success = ds_map_find_value(response_map, "succeed");
             show_debug_message("SHUFFLE_GAME_BOARD_SUCCESS = " + string(success));
             succeeded = true;
-            var users_list = ds_map_find_value(response_map, "clients");
+            var users_list = ds_map_find_value(content, "clients");
             if(ds_exists(users_list, ds_type_list)) {
                 show_debug_message("Users: " + string(ds_list_size(users_list)));
                 for(var i = 0; i < ds_list_size(users_list); i++) {
@@ -110,36 +106,33 @@ switch(message_id) {
                 }
             }
         }
-        ds_map_destroy(response_map); 
         break;
         
     case GET_INITIAL_USERS_ONLINE_RESPONSE:
-        var response_map = json_decode(content);
-        if(response_map != noone) {
-            ds_map_copy(GameController.player_client_map, response_map);
+        if(content != noone) {
             succeeded = true;
-            var users_list = ds_map_find_value(response_map, "clients");
+            var users_list = ds_map_find_value(content, "clients");
+            show_debug_message("users_list: " + string(users_list));
             if(ds_exists(users_list, ds_type_list)) {
                 show_debug_message("Users: " + string(ds_list_size(users_list)));
                 for(var i = 0; i < ds_list_size(users_list); i++) {
                     var list_map = ds_list_find_value(users_list, i);
                     var uid = ds_map_find_value(list_map, "user_id");
-                    var player_name = ds_map_find_value(list_map, "player_name");
-                    
-                    //Temp checks if player exists
-                    with(Player) {
-                        if(user_id == uid) {
-                            show_debug_message("Updating " + string(uid));
-                            panel_row = ds_map_find_value(list_map, "panel_row");
-                            panel_col = ds_map_find_value(list_map, "panel_col");
-                        }
+                    if(client_player.user_id != uid) {
+                        var other_player = instance_create(x, y, Player);
+                        other_player.user_id = uid;
+                        other_player.player_name = ds_map_find_value(list_map, "player_name");
+                        other_player.panel_row = floor(ds_map_find_value(list_map, "panel_row"));
+                        other_player.panel_col = floor(ds_map_find_value(list_map, "panel_col"));
+                        ds_map_add(GameController.player_client_map, other_player.user_id, other_player);
                     }
-                    //show_debug_message("user_id = " + string(uid) + "  |  player_name = " + string(player_name));
                     ds_map_destroy(list_map);
                 }
+            } else {
+                show_debug_message("Something happened @ GET_INITIAL_USERS_ONLINE_RESPONSE");
             }
         }
-        ds_map_destroy(response_map);
+        //ds_map_destroy(response_map);
         /*
         if(!buffering_messages) {
             response_buffered_messages = buffer_read(buffer, buffer_string);
@@ -211,4 +204,6 @@ switch(message_id) {
                                 
 }
 
+
+ds_map_destroy(content);
 return succeeded;

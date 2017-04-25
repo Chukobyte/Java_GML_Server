@@ -61,7 +61,6 @@ public class Server implements Runnable {
 
 	public static void updateGameClients() throws IOException, JSONException {
 		Iterator it = clients.entrySet().iterator();
-		String jsonText = gameBoard.getGameBoardJson();
 		while (it.hasNext()) {
 			Map.Entry<String, ClientHandler> pair = (Map.Entry<String, ClientHandler>) it.next();
 			ClientHandler currentClient = pair.getValue();
@@ -71,9 +70,9 @@ public class Server implements Runnable {
 			JSONObject json = new JSONObject();
 			json.put("message_id", MessageConstants.UPDATE_RESPONSE);
 			//out.writeS8(MessageConstants.UPDATE_RESPONSE);
-			JSONObject contentJson = new JSONObject(jsonText);
+			JSONObject contentJson = new JSONObject(gameBoard.getGameBoardJson());
 			json.put("content", contentJson);
-			out.writeString(jsonText);
+			out.writeString(json.toString());
 			out.flush();
 		}
 	}

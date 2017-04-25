@@ -145,11 +145,17 @@ public class RequestHandler {
 	}
 
 	private static void handleShuffleGameBoardRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out)
-			throws IOException {
+			throws IOException, JSONException {
 		prepareResponse(out, MessageConstants.SHUFFLE_GAME_BOARD_RESPONSE);
+		JSONObject json = new JSONObject();
+		json.put("message_id", MessageConstants.SHUFFLE_GAME_BOARD_RESPONSE);
 		client.getGameBoard().shuffleGameBoard(); // shuffle game board
 		System.out.println(client.getPlayer().getUserId() + " Shuffled Board!");
-		out.writeString("Sucess");
+		JSONObject contentJson = new JSONObject();
+		contentJson.put("message", "Success");
+		json.put("content", contentJson);
+		out.writeString(json.toString());
+		//out.writeString("Sucess");
 	}
 
 	private static void handleUserIdRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out)
@@ -158,6 +164,7 @@ public class RequestHandler {
 		JSONObject json = new JSONObject();
 		json.put("message_id", MessageConstants.USER_ID_RESPONSE);
 		JSONObject jsonContent = new JSONObject();
+		jsonContent.put("user_id", client.getPlayer().getUserId());
 		//out.writeString(client.getPlayer().getUserId());
 
 		// Assigns a player to an empty Panel
