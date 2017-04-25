@@ -59,7 +59,6 @@ switch(message_id) {
                 
     case SHUFFLE_GAME_BOARD_RESPONSE:
         if(content != noone) {
-            
             var success = ds_map_find_value(content, "message");
             show_debug_message("SHUFFLE_GAME_BOARD_SUCCESS = " + string(success));
             succeeded = true;
@@ -67,11 +66,21 @@ switch(message_id) {
         break;
                 
     case USER_MOVE_RESPONSE:
+        if(content != noone) {
+            var response = ds_map_find_value(content, "message");
+            show_debug_message("MOVE_MESSAGE = " + string(response));
+            client_player.panel_row = ds_map_find_value(content, "new_row");
+            client_player.panel_col = ds_map_find_value(content, "new_col");
+            succeeded = true;
+        }
+    
+        /*
         var response = buffer_read(buffer, buffer_string);
         show_debug_message("Response: " + response);
         client_player.panel_row = buffer_read(buffer, buffer_s16);
         client_player.panel_col = buffer_read(buffer, buffer_s16);
         succeeded = true;
+        */
         break;
                 
     case CHAT_LOG_SEND_RESPONSE:
@@ -165,9 +174,8 @@ switch(message_id) {
         break;
         
     case DELETE_USER_RESPONSE:
-        var response_map = json_decode(content);
-        if(response_map != noone) {
-            var delete_user_id = ds_map_find_value(response_map, "user_id");
+        if(content != noone) {
+            var delete_user_id = ds_map_find_value(content, "user_id");
             with(Player) {
                 if(user_id == delete_user_id) {
                     ds_map_delete(GameController.player_client_map, user_id);
@@ -177,21 +185,18 @@ switch(message_id) {
             show_debug_message("user_id = " + string(delete_user_id));
             succeeded = true;
         }
-        ds_map_destroy(response_map); 
         break;
         
     case CREATE_USER_RESPONSE:
-        var response_map = json_decode(content);
-        if(response_map != noone) {
+        if(content != noone) {
             var new_player = instance_create(0, 0, Player);
-            new_player.user_id = ds_map_find_value(response_map, "user_id");
-            new_player.player_name = ds_map_find_value(response_map, "player_name");
-            new_player.panel_row = ds_map_find_value(response_map, "row");
-            new_player.panel_col = ds_map_find_value(response_map, "col");
+            new_player.user_id = ds_map_find_value(content, "user_id");
+            new_player.player_name = ds_map_find_value(content, "player_name");
+            new_player.panel_row = ds_map_find_value(content, "row");
+            new_player.panel_col = ds_map_find_value(content, "col");
             ds_map_add(GameController.player_client_map, new_player.user_id, new_player);
             show_debug_message("user_id = " + string(new_player.user_id));   
         }
-        ds_map_destroy(response_map); 
         succeeded = true;
         break;
             

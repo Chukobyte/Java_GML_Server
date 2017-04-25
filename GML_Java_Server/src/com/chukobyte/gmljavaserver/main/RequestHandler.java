@@ -108,9 +108,11 @@ public class RequestHandler {
 	}
 
 	private static void handleUserMoveRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out)
-			throws IOException {
+			throws IOException, JSONException {
 		String direction = in.readString();
 		prepareResponse(out, MessageConstants.USER_MOVE_RESPONSE);
+		JSONObject json = new JSONObject();
+		json.put("message_id", MessageConstants.USER_MOVE_RESPONSE);
 		short newRow = -1;
 		short newCol = -1;
 		switch (direction) {
@@ -137,11 +139,19 @@ public class RequestHandler {
 		default:
 			break;
 		}
+		
+		JSONObject contentJson = new JSONObject();
+		contentJson.put("new_row", newRow);
+		contentJson.put("new_col", newCol);
 		String response = client.getPlayer().getUserId() + " moved " + direction + "!";
+		contentJson.put("message", response);
+		json.put("content", contentJson);
+		
 		System.out.println(response);
-		out.writeString(response);
-		out.writeS16(newRow);
-		out.writeS16(newCol);
+		out.writeString(json.toString());
+		//out.writeString(response);
+		//out.writeS16(newRow);
+		//out.writeS16(newCol);
 	}
 
 	private static void handleShuffleGameBoardRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out)

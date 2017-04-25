@@ -81,15 +81,10 @@ public class Server implements Runnable {
 			throws IOException, JSONException {
 		Iterator it = clients.entrySet().iterator();
 		JSONObject contentJson = new JSONObject();
-		try {
-			contentJson.put("user_id", userId);
-			contentJson.put("player_name", playerNumber);
-			contentJson.put("row", row);
-			contentJson.put("col", col);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		contentJson.put("user_id", userId);
+		contentJson.put("player_name", playerName);
+		contentJson.put("row", row);
+		contentJson.put("col", col);
 		while (it.hasNext()) {
 			Map.Entry<String, ClientHandler> pair = (Map.Entry<String, ClientHandler>) it.next();
 			ClientHandler currentClient = pair.getValue();

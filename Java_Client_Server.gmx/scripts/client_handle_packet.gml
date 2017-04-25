@@ -22,9 +22,9 @@ if(n_id == server) {
     }
     
     if(buffering_messages) {
-        var buffer_peak1 = buffer_peek(buffer, 0, buffer_string);
-        var buffer_peak2 = buffer_peek(buffer, 1, buffer_string);
-        if(buffer_peak1 != noone && buffer_peak2 != noone) {
+        var buffer_peak = buffer_peek(buffer, 0, buffer_string);
+        show_debug_message("(debug) buffer_peak = " + string(buffer_peak));
+        if(buffer_peak != noone) {
             response_buffered_messages += buffer_read(buffer, buffer_string);
             var incoming_json_map = json_decode(response_buffered_messages);
             if(ds_exists(incoming_json_map, ds_type_map) && ds_map_exists(incoming_json_map, MESSAGE_ID)) { 
@@ -37,16 +37,6 @@ if(n_id == server) {
         } else {
             show_debug_message("no string to buffer");
         }
-        /*
-        //Temp section until propertly handled
-        //Section if number isn't magic number it must be a continuation of old stream
-        response_buffered_messages += buffer_read(buffer, buffer_string);
-        var success = client_handle_response(buffer, buffered_message_id); //retry request handling
-        if(success) {
-            buffered_message_id = noone;
-            buffering_messages = false;
-        }
-        */
     } else {
         show_debug_message("data coming without buffer flag set");
     }
