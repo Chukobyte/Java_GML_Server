@@ -110,9 +110,19 @@ switch(room) {
                     
                     var new_color = asset_get_index(string(ds_map_find_value(panel_map, "color")));
                     panel_board_array[i, j].image_blend = new_color;
+                    
+                    var uid =  ds_map_find_value(panel_map, "player");
+                    //update players
+                    with(Player) {
+                        if(uid == user_id) {
+                            panel_row = i;
+                            panel_col = j;
+                        }
+                    }
                 }
             }
             update_board = false;
+            ds_map_destroy(panel_map);
         }
         break;
 }

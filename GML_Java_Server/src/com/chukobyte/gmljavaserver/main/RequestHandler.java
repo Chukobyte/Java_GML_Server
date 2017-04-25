@@ -101,10 +101,16 @@ public class RequestHandler {
 	}
 
 	private static void handleChatLogSendRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out)
-			throws IOException {
+			throws IOException, JSONException {
 		String chatLog = in.readString();
 		System.out.println(client.getPlayer().getName() + ": " + chatLog);
 		prepareResponse(out, MessageConstants.CHAT_LOG_SEND_RESPONSE);
+		JSONObject json = new JSONObject();
+		json.put("message_id", MessageConstants.CHAT_LOG_SEND_RESPONSE);
+		JSONObject contentJson = new JSONObject();
+		contentJson.put("message", "success");
+		json.put("content", contentJson);
+		out.writeString(json.toString());
 	}
 
 	private static void handleUserMoveRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out)

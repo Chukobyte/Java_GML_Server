@@ -22,9 +22,11 @@ if(n_id == server) {
     }
     
     if(buffering_messages) {
-        var buffer_peak = buffer_peek(buffer, 0, buffer_string);
+        //var buffer_peak = buffer_peek(buffer, 1, buffer_string);
+        var buffer_peak = buffer_base64_encode(buffer, 0, buffer_get_size(buffer));
         show_debug_message("(debug) buffer_peak = " + string(buffer_peak));
-        if(buffer_peak != noone) {
+        //buffer_base64_encode returns "GTA=" if blank
+        if(buffer_peak != noone && buffer_peak != "GTA=") {
             response_buffered_messages += buffer_read(buffer, buffer_string);
             var incoming_json_map = json_decode(response_buffered_messages);
             if(ds_exists(incoming_json_map, ds_type_map) && ds_map_exists(incoming_json_map, MESSAGE_ID)) { 

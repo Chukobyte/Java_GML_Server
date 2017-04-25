@@ -73,20 +73,18 @@ switch(message_id) {
             client_player.panel_col = ds_map_find_value(content, "new_col");
             succeeded = true;
         }
-    
-        /*
-        var response = buffer_read(buffer, buffer_string);
-        show_debug_message("Response: " + response);
-        client_player.panel_row = buffer_read(buffer, buffer_s16);
-        client_player.panel_col = buffer_read(buffer, buffer_s16);
-        succeeded = true;
-        */
         break;
                 
     case CHAT_LOG_SEND_RESPONSE:
         //var response = buffer_read(buffer, buffer_string);
         show_debug_message("Received chat log response");
         succeeded = true;
+        
+        if(content != noone) {
+            var mess = ds_map_find_value(content, "message");
+            show_debug_message("CHAT_LOG_SEND_RESPONSE MESSAGE = " + string(mess));
+            succeeded = true;
+        }
         break;
                 
     case GET_USERS_ONLINE_RESPONSE:
@@ -141,36 +139,6 @@ switch(message_id) {
                 show_debug_message("Something happened @ GET_INITIAL_USERS_ONLINE_RESPONSE");
             }
         }
-        //ds_map_destroy(response_map);
-        /*
-        if(!buffering_messages) {
-            response_buffered_messages = buffer_read(buffer, buffer_string);
-        }
-        show_debug_message("Users Online: " + response_buffered_messages);
-        var online_users_map = json_decode(response_buffered_messages);
-        if(online_users_map != noone) {
-            ds_map_copy(GameController.player_client_map, online_users_map);
-            //show_debug_message("online_users_map: " + string(online_users_map));
-            var users_list = ds_map_find_value(GameController.player_client_map, "clients");
-            show_debug_message("Users: " + string(ds_list_size(users_list)));
-            for(var i = 0; i < ds_list_size(users_list); i++) {
-                var list_map = ds_list_find_value(users_list, i);
-                var uid = ds_map_find_value(list_map, "user_id");
-                if(client_player.user_id != uid) {
-                    var other_player = instance_create(x, y, Player);
-                    other_player.user_id = uid;
-                    other_player.player_name = ds_map_find_value(list_map, "player_name");
-                    other_player.panel_row = ds_map_find_value(list_map, "panel_row");
-                    other_player.panel_col = ds_map_find_value(list_map, "panel_col");
-                    ds_map_add(GameController.player_client_map, other_player.user_id, other_player);
-                }            
-                ds_map_destroy(list_map);
-            }
-            succeeded = true;
-            ds_list_destroy(users_list);
-        }
-        ds_map_destroy(online_users_map);
-        */
         break;
         
     case DELETE_USER_RESPONSE:
