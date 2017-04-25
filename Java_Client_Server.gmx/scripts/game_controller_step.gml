@@ -1,4 +1,6 @@
-///game_controller_init()
+///game_controller_step()
+
+get_input();
 
 //Exit Game
 if(keyboard_check_pressed(vk_escape)) {
@@ -75,6 +77,13 @@ switch(room) {
             }
             //reset keyboard string when clicking for now
             keyboard_string = "";
+        }
+        
+        //temp hotkeys
+        if(!chat_input.player_can_type) {
+            if(update_chat_button) {
+                client_send_request(Client.server, Client.buff, Client.CHAT_LOG_GET_REQUEST);                
+            }
         }
         
         //keyboard return

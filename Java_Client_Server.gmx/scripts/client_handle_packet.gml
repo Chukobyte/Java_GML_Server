@@ -30,7 +30,7 @@ if(n_id == server) {
             response_buffered_messages += buffer_read(buffer, buffer_string);
             var incoming_json_map = json_decode(response_buffered_messages);
             if(ds_exists(incoming_json_map, ds_type_map) && ds_map_exists(incoming_json_map, MESSAGE_ID)) { 
-                var success = client_handle_response_updated(incoming_json_map, buffer);
+                var success = client_handle_response(incoming_json_map, buffer);
                 if(success) {
                     buffering_messages = false;
                 }

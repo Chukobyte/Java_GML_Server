@@ -1,6 +1,5 @@
 package com.chukobyte.gmljavaserver.main;
 
-import java.awt.List;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -8,19 +7,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Queue;
 
+import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.omg.PortableInterceptor.USER_EXCEPTION;
 
 public class Server implements Runnable {
 	private ServerSocket serverSocket;
 	private static int playerNumber = 0;
-	// private static HashMap<String, Player> players = new HashMap<String,
-	// Player>();
 	private static HashMap<String, ClientHandler> clients = new HashMap<String, ClientHandler>();
-	private String[] chatLog = null;
+	private static Queue<String> chatLogQueue = new CircularFifoQueue<String>(8);
 	private boolean running = false;
 	private int port;
 	private Thread thread;
@@ -34,6 +32,10 @@ public class Server implements Runnable {
 	public void launch() throws IOException {
 		serverSocket = new ServerSocket(port);
 		gameBoard = new GameBoard();
+		//populate chat log queue with empty strings
+		for(int i = 0; i < 8; i++) {
+			chatLogQueue.add("empty" + i);
+		}
 		running = true;
 		thread = new Thread(this);
 		thread.start();
@@ -44,15 +46,10 @@ public class Server implements Runnable {
 			try {
 				Socket socket = serverSocket.accept();
 				String playerUserId = "Player" + playerNumber++;
-				Player newPlayer = new Player(playerUserId); // assigns player
-																// and increment
-																// player number
+				Player newPlayer = new Player(playerUserId); // assigns player and increment player number
 				ClientHandler clientHandler = new ClientHandler(socket, newPlayer, gameBoard);
 				clientHandler.launch();
-				clients.put(playerUserId, clientHandler); // playerUserId is
-															// assigned to
-															// client handler
-															// key
+				clients.put(playerUserId, clientHandler); // playerUserId is assigned to client handler key
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -69,7 +66,6 @@ public class Server implements Runnable {
 			out.writeS16(MessageConstants.MAGIC_NUMBER);
 			JSONObject json = new JSONObject();
 			json.put("message_id", MessageConstants.UPDATE_RESPONSE);
-			//out.writeS8(MessageConstants.UPDATE_RESPONSE);
 			JSONObject contentJson = new JSONObject(gameBoard.getGameBoardJson());
 			json.put("content", contentJson);
 			out.writeString(json.toString());
@@ -95,9 +91,6 @@ public class Server implements Runnable {
 				json.put("message_id", MessageConstants.CREATE_USER_RESPONSE);
 				json.put("content", contentJson);
 				out.writeString(json.toString());
-				//out.writeS8(MessageConstants.CREATE_USER_RESPONSE);
-				//out.writeString(json.toString());
-				// out.writeString(userId);
 				out.flush();
 			}
 		}
@@ -134,12 +127,12 @@ public class Server implements Runnable {
 			} catch (JSONException je) {
 				je.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		return clientList;
 	}
+	
 
 	// Static methods to access Server object for now
 	public static void updateChatLog() {
@@ -148,6 +141,21 @@ public class Server implements Runnable {
 			Map.Entry pair = (Map.Entry) it.next();
 			System.out.println(pair.getKey() + "=" + pair.getValue());
 		}
+	}
+	
+	
+	public static void addToChatLog(String message) {
+		chatLogQueue.add(message);
+	}
+	
+	public static String[] getChatLog() {
+		String[] chatLog = new String[8];
+		int index = 0;
+		for(String text: chatLogQueue) {
+			chatLog[index] = text;
+			index++;
+		}
+		return chatLog;
 	}
 
 	public static String printLoggedInClients() {

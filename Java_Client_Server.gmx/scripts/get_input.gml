@@ -7,3 +7,4 @@ down = keyboard_check_pressed(vk_down);
 get_users_online_button = keyboard_check_pressed(ord("O"));
 update_button = keyboard_check_pressed(vk_space);
 shuffle_button = keyboard_check_pressed(vk_tab);
+update_chat_button = keyboard_check_pressed(ord("C"));

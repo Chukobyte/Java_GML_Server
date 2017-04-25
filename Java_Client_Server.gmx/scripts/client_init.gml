@@ -17,6 +17,12 @@ client_pretty_json = pretty;
 client_array = json_decode_two_dimensional_array(pretty);
 //end test
 
+//Chat
+chat_log_array = noone;
+for(var i = 0; i < 8; i++) {
+    chat_log_array[i] = "Text" + string(i);
+}
+
 
 buffering_messages = false; //keeps track if expecting the rest of incomplete message
 response_buffered_messages = "";
@@ -36,6 +42,8 @@ USER_MOVE_RESPONSE = 64;
 USER_MOVE_REQUEST = 32;
 CHAT_LOG_SEND_RESPONSE = 88;
 CHAT_LOG_SEND_REQUEST = 44;
+CHAT_LOG_GET_RESPONSE = 86;
+CHAT_LOG_GET_REQUEST = 43;
 GET_USERS_ONLINE_RESPONSE = 66;
 GET_USERS_ONLINE_REQUEST = 33;
 GET_INITIAL_USERS_ONLINE_RESPONSE = 2;

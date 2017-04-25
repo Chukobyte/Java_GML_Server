@@ -46,6 +46,11 @@ switch(request) {
         network_send_packet(socket, buffer, buffer_tell(buffer));
         break;
         
+    case Client.CHAT_LOG_GET_REQUEST:
+        show_debug_message("CHAT_LOG_GET_REQUEST");
+        network_send_packet(socket, buffer, buffer_tell(buffer));
+        break;
+        
     case Client.GET_USERS_ONLINE_REQUEST:
         show_debug_message("Get Users Online Requested!");
         network_send_packet(socket, buffer, buffer_tell(buffer));

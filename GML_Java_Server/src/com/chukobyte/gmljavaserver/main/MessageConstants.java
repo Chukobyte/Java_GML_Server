@@ -12,6 +12,8 @@ public class MessageConstants {
 	public static final short USER_NAME_SEND_REQUEST = 11;
 	public static final byte CHAT_LOG_SEND_RESPONSE = 88;
 	public static final short CHAT_LOG_SEND_REQUEST = 44;
+	public static final byte CHAT_LOG_GET_RESPONSE = 86;
+	public static final short CHAT_LOG_GET_REQUEST = 43;
 	public static final byte UPDATE_RESPONSE = 16;
 	public static final byte SHUFFLE_GAME_BOARD_RESPONSE = 24;
 	public static final short SHUFFLE_GAME_BOARD_REQUEST = 12;

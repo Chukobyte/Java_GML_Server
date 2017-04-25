@@ -4,6 +4,7 @@ import java.awt.List;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -32,6 +33,9 @@ public class RequestHandler {
 			break;
 		case MessageConstants.CHAT_LOG_SEND_REQUEST:
 			handleChatLogSendRequest(client, in, out);
+			break;
+		case MessageConstants.CHAT_LOG_GET_REQUEST:
+			handleChatLogGetRequest(client, in, out);
 			break;
 		case MessageConstants.GET_USERS_ONLINE_REQUEST:
 			handleGetUsersOnlineRequest(client, in, out);
@@ -102,14 +106,40 @@ public class RequestHandler {
 
 	private static void handleChatLogSendRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out)
 			throws IOException, JSONException {
-		String chatLog = in.readString();
-		System.out.println(client.getPlayer().getName() + ": " + chatLog);
+		String chatInput = in.readString();
+		String chatLog = client.getPlayer().getName() + ": " + chatInput;
+		Server.addToChatLog(chatLog); //add message to log stores 8 texts for now
+		System.out.println(chatLog);
 		prepareResponse(out, MessageConstants.CHAT_LOG_SEND_RESPONSE);
 		JSONObject json = new JSONObject();
 		json.put("message_id", MessageConstants.CHAT_LOG_SEND_RESPONSE);
 		JSONObject contentJson = new JSONObject();
 		contentJson.put("message", "success");
 		json.put("content", contentJson);
+		out.writeString(json.toString());
+	}
+	
+	private static void handleChatLogGetRequest(ClientHandler client, GMLInputStream in, GMLOutputStream out)
+			throws IOException, JSONException {
+		prepareResponse(out, MessageConstants.CHAT_LOG_GET_RESPONSE);
+		JSONObject json = new JSONObject();
+		json.put("message_id", MessageConstants.CHAT_LOG_GET_RESPONSE);
+		JSONObject contentJson = new JSONObject();
+		
+		String[] chatArray = Server.getChatLog();
+		JSONArray jsonChatArray = new JSONArray();
+		//populate chat array
+		int chatIndex = 0;
+		for(String text: chatArray) {
+			JSONObject chatJson = new JSONObject();
+			chatJson.put("text", text);
+			chatJson.put("index", chatIndex);
+			chatIndex++;
+			jsonChatArray.put(chatJson);
+		}
+		contentJson.put("chat_array", jsonChatArray);
+		json.put("content", contentJson);
+		System.out.println("chat_log_buffer: " + json.toString());
 		out.writeString(json.toString());
 	}
 
